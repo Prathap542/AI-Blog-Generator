@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .glow:hover {
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.5); /* Glow effect */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gradient-to-r from-gray-100 via-purple-50 to-gray-100 text-gray-800 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-purple-600 to-blue-600 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-white animate-pulse">AI Blog Generator</h1>
+            <div>
+                <a href="login" class="text-white hover:text-purple-200 mx-4">Login</a>
+                <a href="signup" class="text-white hover:text-purple-200 mx-4">Signup</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex items-center justify-center flex-grow">
+        <div class="bg-white p-8 shadow-lg rounded-lg max-w-md w-full fade-in">
+            <form class="space-y-6" action="" method="POST">
+                {% csrf_token %}
+
+                {% if error_message %}
+                    <div align="center" class="text-red-500">
+                        <h2>{{ error_message }}</h2>
+                    </div>
+                {% endif %}
+
+                <h2 class="text-2xl font-semibold text-center text-gray-800">Create Your Account</h2>
+
+                <div>
+                    <label for="username" class="block mb-2 font-medium text-gray-700">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username..."
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-4 focus:ring-purple-300 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="email" class="block mb-2 font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email..."
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-4 focus:ring-purple-300 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="password" class="block mb-2 font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password..."
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-4 focus:ring-purple-300 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="repeatPassword" class="block mb-2 font-medium text-gray-700">Repeat Password</label>
+                    <input type="password" id="repeatPassword" name="repeatPassword" placeholder="Repeat your password..."
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-4 focus:ring-purple-300 focus:outline-none">
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white p-3 rounded-lg hover:bg-gradient-to-l hover:from-blue-600 hover:to-purple-600 focus:ring-4 focus:ring-purple-300 glow">
+                    Signup
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-blue-600 to-purple-600 text-center text-white py-4">
+        <p class="text-sm">
+            Already have an account? <a href="login" class="underline hover:text-purple-200">Login here</a>.
+        </p>
+    </footer>
+</body>
+</html>

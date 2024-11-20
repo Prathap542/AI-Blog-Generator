@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blog Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid transparent;
+            border-top: 6px solid #6b21a8; /* Purple */
+            border-right: 6px solid #9333ea; /* Deep Purple */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glow:hover {
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.5); /* Glow on hover */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gradient-to-r from-gray-100 via-purple-50 to-gray-100 text-gray-800 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-purple-600 to-blue-600 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white animate-pulse">AI Blog Generator</h1>
+            <div>
+                <a href="#" class="text-white hover:text-purple-200 mx-4">Welcome {{ user.username }}</a>
+                <a href="/blog-list" class="text-white hover:text-purple-200 mx-4">Saved Blog Posts</a>
+                <a href="logout" class="text-white hover:text-purple-200">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto mt-10 px-4">
+        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out">
+            <!-- Introduction -->
+            <div class="text-center mb-6 fade-in">
+                <h2 class="text-3xl font-bold text-gray-800">Welcome to the AI Blog Generator</h2>
+                <p class="text-gray-600 mt-2">
+                    Generate high-quality blog articles from YouTube videos using AI. Just paste the link and let the magic happen!
+                </p>
+            </div>
+
+            <!-- YouTube Link Input -->
+            <div>
+                <label for="youtubeLink" class="block text-lg font-medium text-gray-700 mb-2">Enter YouTube Video Link</label>
+                <div class="flex">
+                    <input id="youtubeLink" type="url" placeholder="Paste YouTube Link..." 
+                           class="flex-grow p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300">
+                    <button id="generateBlogButton" 
+                            class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-r-lg hover:bg-gradient-to-l hover:from-blue-600 hover:to-purple-600 focus:ring-4 focus:ring-purple-300 transition duration-300 glow">
+                        Generate
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading-circle" class="spinner mx-auto mt-6 hidden fade-in"></div> 
+
+            <!-- Blog Content -->
+            <section class="mt-10 fade-in">
+                <h2 class="text-xl font-semibold text-gray-800">Generated Blog Article</h2>
+                <div id="blogContent" class="mt-4 text-gray-700 space-y-4"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-blue-600 to-purple-600 text-center text-white py-4 mt-10">
+        <p class="text-sm">
+            Powered by <a href="https://www.linkedin.com/in/kancharla-prathap-b95320192/" target="_blank" class="underline hover:text-purple-200">Prathap K</a>
+        </p>
+    </footer>
+
+
+    <script>
+        document.getElementById('generateBlogButton').addEventListener('click', async () => {
+    const youtubeLink = document.getElementById('youtubeLink');
+    const blogContent = document.getElementById('blogContent');
+    const loadingCircle = document.getElementById('loading-circle');
+    
+    // Input validation
+    if (youtubeLink.value.trim() === "") {
+        youtubeLink.classList.add('border-red-500', 'ring-red-500');
+        youtubeLink.focus();
+        setTimeout(() => {
+            youtubeLink.classList.remove('border-red-500', 'ring-red-500');
+        }, 2000);
+        return;
+    }
+
+    // Show loading spinner
+    loadingCircle.classList.remove('hidden');
+    blogContent.innerHTML = ''; // Clear previous content
+
+    try {
+        // API call to generate blog content
+        const response = await fetch('/generate-blog', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ link: youtubeLink.value.trim() })
+        });
+
+        const data = await response.json();
+        if (data.content) {
+            blogContent.innerHTML = data.content; // Display blog content
+        } else {
+            blogContent.innerHTML = "<p class='text-gray-600'>No content generated for this video. Try another link.</p>";
+        }
+    } catch (error) {
+        console.error("Error occurred:", error);
+        blogContent.innerHTML = "<p class='text-red-600'>Something went wrong. Please try again later.</p>";
+    }
+
+    // Hide loading spinner
+    loadingCircle.classList.add('hidden');
+});
+    </script>
+    
+</body>
+</html>
